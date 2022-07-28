@@ -1,5 +1,13 @@
 import { useState, useEffect } from 'react';
-import { VStack, Text, ScrollView, HStack, useTheme, Box } from 'native-base';
+import {
+  VStack,
+  Text,
+  ScrollView,
+  HStack,
+  useTheme,
+  Box,
+  Image,
+} from 'native-base';
 import { Alert } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -15,6 +23,7 @@ import {
   ClipboardText,
   CircleWavyCheck,
   Hourglass,
+  Image as IconImage,
 } from 'phosphor-react-native';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
@@ -26,6 +35,7 @@ type RouteParams = {
 type OrderDetails = OrderProps & {
   description: string;
   solution: string;
+  urlImage: string;
   closed: string;
 };
 
@@ -52,6 +62,7 @@ export function Details() {
           created_at,
           closed_at,
           solution,
+          urlImage,
         } = doc.data();
 
         const closed = closed_at ? dateFormat(closed_at) : null;
@@ -61,6 +72,7 @@ export function Details() {
           patrimony,
           description,
           status,
+          urlImage,
           solution,
           when: dateFormat(created_at),
           closed,
@@ -126,12 +138,29 @@ export function Details() {
         </Text>
       </HStack>
 
-      <ScrollView mx={5} showsVerticalScrollIndicator={false} p={4}>
+      <ScrollView
+        mx={5}
+        showsVerticalScrollIndicator={false}
+        p={4}
+        contentContainerStyle={{ paddingBottom: 100 }}
+      >
         <CardDetails
           title="Equipamento"
           description={`Patrimônio: ${order.patrimony}`}
           icon={DesktopTower}
         />
+
+        {order.urlImage && (
+          <CardDetails title="Imagem do problema" icon={IconImage}>
+            <Image
+              source={{ uri: order.urlImage }}
+              w={300}
+              h={300}
+              alt="Imagem do problema"
+              rounded="lg"
+            />
+          </CardDetails>
+        )}
 
         <CardDetails
           title="Descrição do problema"
@@ -148,7 +177,7 @@ export function Details() {
         >
           {order.status === 'open' && (
             <Input
-              placeholder="Descrição solução"
+              placeholder="Descrição da solução"
               onChangeText={setSolution}
               textAlignVertical="top"
               multiline

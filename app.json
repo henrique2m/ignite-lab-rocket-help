@@ -7,7 +7,14 @@
       "**/*"
     ],
     "plugins": [
-      "@react-native-firebase/app"
+      "@react-native-firebase/app",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Gostaríamos de acessar as suas fotos",
+          "cameraPermission": "Gostaríamos de acessar a sua câmera."
+        }
+      ]
     ],
     "android": {
       "package": "com.rockethelp",
